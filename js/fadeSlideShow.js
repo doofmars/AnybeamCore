@@ -24,7 +24,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 jQuery.fn.fadeSlideShow = function(options) {
 	return this.each(function(){
 		settings = jQuery.extend({
-     		width: 450, // default width of the slideshow
+     		width: 300, // default width of the slideshow
 			speed: 'slow', // default animation transition speed
 			interval: 10000, // default interval between image change
 			ListElement: 'fssList', // default id for image / content controll list

@@ -8,13 +8,26 @@
 	padding-right: 10px;
 }
 
+.logo-wrapper {
+	float: left;
+	padding: 15;
+}
+
 h1, .h1, h2, .h2, h3, .h3 {
     margin-bottom: 10px;
     margin-top: 10px;
 }
 
+.container-content {
+	padding-bottom: 20px;
+}
+
 /* Slideshow Style */
 
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+}
 
 *{padding:0;margin:0;list-style:none;outline:none;}
 body{font:14px Tahoma, Geneva, sans-serif;}
@@ -27,14 +40,14 @@ ul#slideshow{
 	list-style:none;
 	padding:2px;
 	margin:auto;
-	height:720px;
+	height:533px;
 	overflow:hidden;
 }
 
 #fssList{list-style:none;
-	width:646px;
+	width:*;
 	margin:auto;
-	padding:5px 0 0 45%;
+	text-align:center;
 }
 #fssList li{display:inline;
 	padding-right:10px;
@@ -45,9 +58,58 @@ ul#slideshow{
 #fssList li.fssActive a{font-weight:bold;
 	color:#333;
 }
+/* Sidebar */
 
+@media (min-width: 768px) {
+	.sidebar {
+		background-color: #F5F5F5;
+		border-right: 1px solid #EEEEEE;
+		bottom: 0;
+		display: block;
+		left: 0;
+		overflow-x: hidden;
+		overflow-y: auto;
+		padding: 20px;
+		position: fixed;
+		top: 51px;
+		z-index: 1000;
+	}
+}
+.nav-sidebar {
+    margin-bottom: 20px;
+    margin-left: -20px;
+    margin-right: -21px;
+}
+
+.nav-sidebar {
+    margin-bottom: 20px;
+    margin-left: -20px;
+    margin-right: -21px;
+}
+.nav-sidebar > li > a {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.nav-sidebar > .active > a {
+    background-color: #428BCA;
+    color: #FFFFFF;
+}
 
 /* Mavigation bar Style */
+
+.logo-dark {
+	float: left;
+	height: 20px;
+	padding-right: 10px;
+}
+
+.navbar-brand {
+    float: none;
+    font-size: 18px;
+    height: 50px;
+    line-height: 20px;
+    padding: 15px;
+}
 
 .navbar-default {
 	background-color: #7AA623;
