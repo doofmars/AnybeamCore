@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -7,15 +7,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Theme Template for Bootstrap</title>
+    <title>Anybeam</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="theme.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+		
+	<!-- Favicon -->
+	<link type="image/x-icon" href="favicon.ico" rel="icon">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,7 +28,7 @@
   <body role="document">
 
     <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,26 +37,75 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+		  
           <a class="navbar-brand" href="#">Anybeam</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">Help</a></li>
+            <li><a href="help/index.html">Help</a></li>
+            <li><a href="playstore/">Playstore</a></li>
             <li><a href="#about">About</a></li>
           </ul>
+          <ul class="nav navbar-nav navbar-right">
+		  
+            <li><a href="index_de.html"><img alt="German" src="img/de.png"></a></li>
+            <li><a href="index.html"><img alt="English" src="img/en.png"></a></li>
+          </ul>		  
         </div><!--/.nav-collapse -->
       </div>
     </div>
-
-    <div class="container theme-showcase" role="main">
-
-      <!-- Main jumbotron for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <h1>Anybeam - Share files over boundaries</h1>
-        <p>Some text comes here</p>
-        <p><a href="#" class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
+	
+    <div class="container" role="main">
+	<div id="banner" class="page-header">
+        <div class="row">
+          <div class="col-lg-6">
+			<img class="logo" alt="Logo" src="img/logo.png">
+            <h1>Anybeam</h1>
+            <p class="lead">Share files over boundaries</p>
+          </div>
+          <div style="padding: 15px 15px 0 15px;" class="col-lg-6">
+		  
+          </div>
+        </div>
       </div>
+	  
+	  <div class="row">
+          <div class="col-lg-6"> <!-- Content Image -->
+			<div id="slideshowWrapper">
+				<ul id="slideshow">
+					<li><img src="img/slideshow/5.png" width="100%" border="0" alt="" /></li> <!-- This is the last image in the slideshow -->
+					<li><img src="img/slideshow/4.png" width="100%" border="0" alt="" /></li> 
+					<li><img src="img/slideshow/3.png" width="100%" border="0" alt="" /></li>
+					<li><img src="img/slideshow/2.png" width="100%" border="0" alt="" /></li>
+					<li><img src="img/slideshow/1.png" width="100%" border="0" alt="" /></li> <!-- This is the first image in the slideshow -->
+				</ul><br clear="all" />
+			</div>
+			
+			
+          </div> <!-- End Content Image -->
+          <div class="col-lg-6"> <!-- Content Text -->
+			<h2>Topic 1</h2>
+			<p>Durch Anybeam ist es dir möglich einfach, schnell und sicher Dateien zwischen verschiedenen Geräten im Lokalen Netzwerk auszutauschen. </p>
+			<p>Wir setzen dabei nicht auf eine Server-basierte Lösung, einfach unsere App installieren, einrichten und dann kann man auch schon loslegen.</p>
+			<p>Es ist dabei nicht nur möglich sämtliche Dateien auszutauschen sonder auch </p>
+			<h2>Topic 2</h2>
+			<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
+			sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
+			sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
+			Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+			<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
+			sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, 
+			sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
+			Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+			<h2>Downloads</h2>
+			<a href="playstore/"><button class="btn btn-primary" type="button">Anybeam for Android</button></a>
+			<a  href="file_here"><button class="btn btn-success" type="button">Anybeam for Desktop</button></a>
+			
+           
+          </div> <!-- End Content Text -->
+        </div>
+
 
     </div> <!-- /container -->
 
@@ -63,8 +113,16 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/docs.min.js"></script>
+	
+	<!-- Gallery Plugin -->
+	<script src="js/fadeSlideShow.js"></script>
+	<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#slideshow').fadeSlideShow();
+	});
+	</script>
   </body>
 </html>

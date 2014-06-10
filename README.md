@@ -1,4 +1,4 @@
-AnybeamCore
+Anybeam Website
 ===========
 
-Anybeam NetworkCore API
+Anybeam Website, Hostet on Github
