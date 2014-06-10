@@ -26,7 +26,7 @@ jQuery.fn.fadeSlideShow = function(options) {
 		settings = jQuery.extend({
      		width: 450, // default width of the slideshow
 			speed: 'slow', // default animation transition speed
-			interval: 3000, // default interval between image change
+			interval: 10000, // default interval between image change
 			ListElement: 'fssList', // default id for image / content controll list
 			ListLi: 'fssLi', // default class for li's in the image / content controll 
 			ListLiActive: 'fssActive', // default class for active state in the controll list
