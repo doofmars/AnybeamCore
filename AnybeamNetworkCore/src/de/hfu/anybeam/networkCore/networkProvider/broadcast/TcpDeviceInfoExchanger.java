@@ -2,14 +2,25 @@ package de.hfu.anybeam.networkCore.networkProvider.broadcast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.spec.KeySpec;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SecretKey;
 
 import de.hfu.anybeam.networkCore.Client;
+import de.hfu.anybeam.networkCore.EncryptionType;
 import de.hfu.anybeam.networkCore.UrlParameterBundle;
 
 public class TcpDeviceInfoExchanger implements Runnable {
@@ -26,29 +37,35 @@ public class TcpDeviceInfoExchanger implements Runnable {
 	//A flag indicating weather this instance was disposed
 	private boolean isDisposed = false;
 
+	/**
+	 * Creates a new {@linkplain TcpDeviceInfoExchanger} which starts a tiny server and listens for incoming information.
+	 * {@link #sendRegisterToDevice(InetAddress)} can be used to connect to other devices' {@linkplain TcpDeviceInfoExchanger}.
+	 * @param owner The {@link LocalNetworkProvider} who owns this instance
+	 * @throws IOException
+	 */
 	public TcpDeviceInfoExchanger(LocalNetworkProvider owner) throws IOException {
 		this.MY_OWNER = owner;
 		this.SERVER_SOCKET = new ServerSocket(this.MY_OWNER.getBroadcastPort());
+		
 	}
 
 	@Override
 	public void run() {
-
 		while(!Thread.interrupted()) {
-
 			Socket s = null;
 			OutputStream out = null;
 			BufferedReader in = null;
 			try {
+				System.out.println("Waiting...");
+
 				s = this.SERVER_SOCKET.accept();
 
 				System.out.println("connection!");
 				
 				//Create streams
 				out = s.getOutputStream();
-				in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+				in = new BufferedReader(new InputStreamReader(this.createCipherInputStream(s.getInputStream())));
 				
-				System.out.println("Waiting...");
 
 				//Receive data and create client
 				UrlParameterBundle bundle = new UrlParameterBundle(in.readLine());
@@ -71,8 +88,8 @@ public class TcpDeviceInfoExchanger implements Runnable {
 					//Write my infos
 					bundle = this.MY_OWNER.getNetworkEnvironment().createRegisterPayload();
 					bundle.put(TcpDeviceInfoExchanger.HEADER_FIELD_DATA_PORT, this.MY_OWNER.getTransmissionPort());
-					out.write(bundle.generateUrlString().getBytes());
-					out.write('\n');
+					String data = bundle.generateUrlString() + "\n";
+					out.write(this.encrypt(data));
 					out.flush();
 					
 				} 
@@ -107,12 +124,23 @@ public class TcpDeviceInfoExchanger implements Runnable {
 
 	}
 
+	/**
+	 * Disposes this object and its resources.
+	 * This object can no longer be used.
+	 * @throws IOException
+	 */
 	public void dispose() throws IOException {
 		this.isDisposed = true;
 		this.SERVER_SOCKET.close();
 
 	}
 
+	/**
+	 * Sends a register signal to a remote {@linkplain TcpDeviceInfoExchanger} and returns the found Client.
+	 * @param address the {@linkplain InetAddress} of the client which should be connected
+	 * @return the found client
+	 * @throws Exception if anything goes wrong
+	 */
 	public Client sendRegisterToDevice(InetAddress address) throws Exception {
 		Socket s = null;
 		OutputStream out = null;
@@ -125,20 +153,24 @@ public class TcpDeviceInfoExchanger implements Runnable {
 			//Connect
 			InetSocketAddress socketAddress = new InetSocketAddress(address, this.MY_OWNER.getBroadcastPort());
 			s = new Socket();
-			s.connect(socketAddress);
+			s.connect(socketAddress, 3000);
 
 			//Create streams
 			out = s.getOutputStream();
-			in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(this.createCipherInputStream(s.getInputStream())));
 			
 			//Send data
-			out.write(bundle.generateUrlString().getBytes());
-			out.write('\n');
+			String data = bundle.generateUrlString() + "\n";
+			out.write(this.encrypt(data));
 			out.flush();
+			s.shutdownOutput();
+			
 			System.out.println("Send: " + bundle.generateUrlString());
 
 			//Receive data and create client
-			bundle = new UrlParameterBundle(in.readLine());
+			String line = in.readLine();
+			System.out.println("Received: " + line);
+			bundle = new UrlParameterBundle(line);
 
 			//close everything
 			in.close();
@@ -166,6 +198,11 @@ public class TcpDeviceInfoExchanger implements Runnable {
 		}
 	}
 
+	/**
+	 * Sends a unregister signal to a remote {@linkplain TcpDeviceInfoExchanger}
+	 * @param address the {@linkplain InetAddress} of the client taht should be connected
+	 * @throws Exception
+	 */
 	public void sendUnregisterToDevice(InetAddress address) throws Exception {
 		Socket s = null;
 		OutputStream out = null;
@@ -179,12 +216,11 @@ public class TcpDeviceInfoExchanger implements Runnable {
 			s.connect(new InetSocketAddress(address, this.MY_OWNER.getBroadcastPort()), 200);
 
 			//Create streams
-//			out = new CipherOutputStream(s.getOutputStream(), this.MY_OWNER.getNetworkEnvironment().getEncryptionCipher());
 			out = s.getOutputStream();
 
 			//Send data
-			out.write(bundle.generateUrlString().getBytes());
-			out.write('\n');
+			String data = bundle.generateUrlString() + "\n";
+			out.write(this.encrypt(data));
 			out.flush();
 
 		} finally {
@@ -195,5 +231,68 @@ public class TcpDeviceInfoExchanger implements Runnable {
 			if(s != null)
 				s.close();
 		}
+	}
+	
+	/**
+	 * Creates a new {@linkplain CipherInputStream} using the owner's settings wrapping the given {@linkplain InputStream}.
+	 * @param in the {@linkplain InputStream} that should be wrapped
+	 * @return the created {@linkplain CipherInputStream}
+	 * @throws InvalidKeyException
+	 */
+	private InputStream createCipherInputStream(InputStream in) throws InvalidKeyException {	
+		if(this.getEncryptionType() == EncryptionType.NONE)
+			return in;
+		
+		return new CipherInputStream(in, this.getCipher(Cipher.DECRYPT_MODE));
+
+	}
+	
+	/**
+	 * Encryptes the given {@linkplain String} using the owner's settings.
+	 * @param in the {@linkplain String} that should be encrypted
+	 * @return the encrypted bytes
+	 * @throws InvalidKeyException
+	 * @throws IllegalBlockSizeException
+	 * @throws BadPaddingException
+	 * @throws UnsupportedEncodingException
+	 */
+	private byte[] encrypt(String in) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		if(this.getEncryptionType() == EncryptionType.NONE)
+			return in.getBytes("UTF-8");
+		
+		return this.getCipher(Cipher.ENCRYPT_MODE).doFinal(in.getBytes("UTF-8"));
+		
+	}
+	
+	/**
+	 * Creates a new {@linkplain Cipher} using the owner's Settings
+	 * @param opmode the {@linkplain Cipher}'s mode
+	 * @return the created {@linkplain Cipher}
+	 * @throws InvalidKeyException
+	 */
+	private Cipher getCipher(int opmode) throws InvalidKeyException {
+		Cipher c = this.getEncryptionType().createCipher();
+		c.init(opmode, this.getSecretKey());
+		
+		return c;
+		
+	}
+	
+	/**
+	 * Creates a new {@linkplain SecretKey} using the owner's salt
+	 * @return the creates {@linkplain SecretKey}
+	 */
+	private SecretKey getSecretKey() {
+		return this.getEncryptionType().getSecretKeySpec(this.MY_OWNER.getNetworkEnvironment().getEncryptionKey());
+		
+	}
+	
+	/**
+	 * Returns the owner's {@linkplain EncryptionType}
+	 * @return the owner's {@linkplain EncryptionType}
+	 */
+	private EncryptionType getEncryptionType() {
+		return this.MY_OWNER.getNetworkEnvironment().getEncryptionType();
+		
 	}
 }
