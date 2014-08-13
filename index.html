@@ -73,19 +73,45 @@
 	  
 	  <div class="row">
           <div class="col-md-5"> <!-- Content Image -->
-			<div id="slideshowWrapper">
-				<ul id="slideshow">
-					<li><img src="img/slideshow/6.png" width="100%" border="0" alt="" /></li> <!-- This is the last image in the slideshow -->
-					<li><img src="img/slideshow/5.png" width="100%" border="0" alt="" /></li> 
-					<li><img src="img/slideshow/4.png" width="100%" border="0" alt="" /></li> 
-					<li><img src="img/slideshow/3.png" width="100%" border="0" alt="" /></li>
-					<li><img src="img/slideshow/2.png" width="100%" border="0" alt="" /></li>
-					<li><img src="img/slideshow/1.png" width="100%" border="0" alt="" /></li> <!-- This is the first image in the slideshow -->
-				</ul><br clear="all" />
-			</div>
+			  <div id="slideshow" style="position: relative; top: 0px; left: 0px; width: 309px; height: 580px; overflow: hidden; margin: 0 auto;  ">
+					<!-- Loading Screen -->
+					<div u="loading" style="position: absolute; top: 0px; left: 0px;">
+						<div style="filter: alpha(opacity=70); opacity:0.7; position: absolute; display: block;
+							background-color: #000000; top: 0px; left: 0px;width: 100%;height:100%;">
+						</div>
+						<div style="position: absolute; display: block; background: url(img/loading.gif) no-repeat center center;
+							top: 0px; left: 0px;width: 100%;height:100%;">
+						</div>
+					</div>
+					
+					<!-- Slides Container -->
+					<div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 309px; height: 550px; overflow: hidden;">
+							<div><img src="img/slideshow/1.png" u="image" /></div> 
+							<div><img src="img/slideshow/2.png" u="image" /></div>
+							<div><img src="img/slideshow/3.png" u="image" /></div>
+							<div><img src="img/slideshow/4.png" u="image" /></div> 
+							<div><img src="img/slideshow/5.png" u="image" /></div> 
+							<div><img src="img/slideshow/6.png" u="image" /></div> 
+						</ul><br clear="all" />
+					</div>
+					
+					<!-- bullet navigator container -->
+					<div u="navigator" class="jssorb05" style="position: absolute; bottom: 0px; right: 6px;">
+						<!-- bullet navigator item prototype -->
+						<div u="prototype" style="position: absolute; width: 16px; height: 16px;"></div>
+					</div>
+					
+					<!-- Arrow Left -->
+					<span u="arrowleft" class="jssora12l" style="width: 30px; height: 46px; top: 250px; left: 0px;">
+					</span>
+					<!-- Arrow Right -->
+					<span u="arrowright" class="jssora12r" style="width: 30px; height: 46px; top: 250px; right: 0px">
+					</span>
+					
+					<a style="display: none" href="http://www.jssor.com">slideshow</a>
+				</div> <!-- Jssor Slider End -->
 			
-			
-          </div> <!-- End Content Image -->
+	      </div> <!-- End Content Image -->
           <div class="col-md-6"> <!-- Content Text -->
 			<h2>What is Anybeam?</h2>
 			<p>With Anybeam you are able to share files, text and images easy and fast between devices in your local network.</p>
@@ -132,13 +158,9 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/jssor.slider.mini.js"></script>
+    <script src="js/jssor.conf.js"></script>
 	
-	<!-- Gallery Plugin -->
-	<script src="js/fadeSlideShow.js"></script>
-	<script type="text/javascript">
-	jQuery(document).ready(function(){
-		jQuery('#slideshow').fadeSlideShow();
-	});
-	</script>
+
   </body>
 </html>
