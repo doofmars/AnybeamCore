@@ -136,7 +136,7 @@ public abstract class AbstractTransmission extends Thread {
 	 * @return true if the transmission is done, false if it is still in progress
 	 */
 	public boolean isDone() {
-		return this.getState() == Thread.State.TERMINATED;
+		return this.getState() == State.TERMINATED;
 	}
 
 	/**
